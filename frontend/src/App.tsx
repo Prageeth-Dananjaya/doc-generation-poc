@@ -59,6 +59,48 @@ function App() {
     );
   }, [result]);
 
+  const computeSettlements = (
+    balances: Record<string, number>,
+  ): { from: string; to: string; amount: number }[] => {
+    const creditors: { name: string; amount: number }[] = [];
+    const debtors: { name: string; amount: number }[] = [];
+
+    Object.entries(balances).forEach(([name, amt]) => {
+      const rounded = Math.round(amt * 100) / 100;
+      if (rounded > 0.0) creditors.push({ name, amount: rounded });
+      else if (rounded < 0.0) debtors.push({ name, amount: -rounded });
+    });
+
+    creditors.sort((a, b) => b.amount - a.amount);
+    debtors.sort((a, b) => b.amount - a.amount);
+
+    const transfers: { from: string; to: string; amount: number }[] = [];
+
+    let i = 0;
+    let j = 0;
+    while (i < debtors.length && j < creditors.length) {
+      const owe = debtors[i].amount;
+      const due = creditors[j].amount;
+      const take = Math.min(owe, due);
+      transfers.push({
+        from: debtors[i].name,
+        to: creditors[j].name,
+        amount: take,
+      });
+      debtors[i].amount = +(debtors[i].amount - take).toFixed(2);
+      creditors[j].amount = +(creditors[j].amount - take).toFixed(2);
+      if (debtors[i].amount <= 0.001) i++;
+      if (creditors[j].amount <= 0.001) j++;
+    }
+
+    return transfers;
+  };
+
+  const settlements = useMemo(() => {
+    if (!result) return [];
+    return computeSettlements(result.balances);
+  }, [result]);
+
   const sanitizePayload = (payload: EventPayload): EventPayload => {
     const participants = payload.participants
       .map((name) => name.trim())
@@ -581,18 +623,36 @@ function App() {
         </div>
 
         {summary ? (
-          <div className="balance-grid">
-            {summary.map(([name, amount]) => (
-              <article key={name} className="balance-item">
-                <h3>{name}</h3>
-                <p className={amount >= 0 ? "positive" : "negative"}>
-                  {amount >= 0
-                    ? `Should receive ${amount.toFixed(2)}`
-                    : `Owes ${Math.abs(amount).toFixed(2)}`}
-                </p>
-              </article>
-            ))}
-          </div>
+          <>
+            <div className="balance-grid">
+              {summary.map(([name, amount]) => (
+                <article key={name} className="balance-item">
+                  <h3>{name}</h3>
+                  <p className={amount >= 0 ? "positive" : "negative"}>
+                    {amount >= 0
+                      ? `Should receive ${amount.toFixed(2)}`
+                      : `Owes ${Math.abs(amount).toFixed(2)}`}
+                  </p>
+                </article>
+              ))}
+            </div>
+
+            {settlements.length > 0 && (
+              <div className="settlement-plan">
+                <h3>Suggested transfers</h3>
+                {settlements.map((t, idx) => (
+                  <div key={idx} className="transfer-item">
+                    <span className="transfer-from">{t.from}</span>
+                    <span className="transfer-arrow">→</span>
+                    <span className="transfer-to">{t.to}</span>
+                    <span className="transfer-amount">
+                      {t.amount.toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
         ) : (
           <div className="empty-state">
             <p>Submit an event to see who should pay or receive money.</p>

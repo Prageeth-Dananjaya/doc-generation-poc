@@ -80,6 +80,29 @@
   align-items: center;
 }
 
+.settlement-plan {
+  margin-top: 18px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.06);
+  padding-top: 12px;
+}
+
+.transfer-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+.transfer-arrow {
+  opacity: 0.8;
+}
+
+.transfer-amount {
+  margin-left: auto;
+  font-weight: 600;
+}
+
 .subsection-header {
   display: flex;
   justify-content: space-between;
