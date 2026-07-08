@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 
 type ExpensePayload = {
@@ -46,6 +46,7 @@ const createId = () => {
 function App() {
   const [payload, setPayload] = useState<EventPayload>(defaultPayload);
   const [result, setResult] = useState<BalanceResponse | null>(null);
+  const [events, setEvents] = useState<EventPayload[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -266,6 +267,7 @@ function App() {
       const balanceData = (await balancesResponse.json()) as BalanceResponse;
       setResult(balanceData);
       setPayload(createdEvent);
+      await loadEvents();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -273,8 +275,83 @@ function App() {
     }
   };
 
+  const loadEvents = async () => {
+    try {
+      const res = await fetch("/api/events");
+      if (!res.ok) return;
+      const data = await res.json();
+      setEvents(data.events || []);
+    } catch (_) {
+      // ignore
+    }
+  };
+
+  useEffect(() => {
+    loadEvents();
+  }, []);
+
+  const loadEvent = async (id: string) => {
+    try {
+      const res = await fetch(`/api/events/${id}`);
+      if (!res.ok) throw new Error("failed to load event");
+      const evt = (await res.json()) as EventPayload;
+      setPayload(evt);
+
+      const balancesRes = await fetch(`/api/events/${id}/balances`);
+      if (balancesRes.ok) {
+        const bd = (await balancesRes.json()) as BalanceResponse;
+        setResult(bd);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "load failed");
+    }
+  };
+
+  const deleteEvent = async (id: string) => {
+    try {
+      const res = await fetch(`/api/events/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("delete failed");
+      await loadEvents();
+      // if currently viewing deleted event, clear
+      if (payload.id === id) {
+        setPayload({ ...defaultPayload, id: createId() });
+        setResult(null);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "delete failed");
+    }
+  };
+
+  const newEvent = () => {
+    setPayload({ id: createId(), name: "", participants: [""], expenses: [] });
+    setResult(null);
+  };
+
   return (
     <main className="app-shell">
+      <aside className="sidebar">
+        <div className="subsection-header">
+          <h3>Events</h3>
+          <button type="button" className="secondary-button" onClick={newEvent}>
+            New
+          </button>
+        </div>
+        <div className="event-list">
+          {events.map((evt) => (
+            <div key={evt.id} className="event-item">
+              <button className="text-button" onClick={() => loadEvent(evt.id)}>
+                {evt.name || evt.id}
+              </button>
+              <button
+                className="text-button"
+                onClick={() => deleteEvent(evt.id)}
+              >
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
+      </aside>
       <section className="hero-card">
         <div className="hero-copy">
           <p className="eyebrow">Collaborative expense insights</p>
