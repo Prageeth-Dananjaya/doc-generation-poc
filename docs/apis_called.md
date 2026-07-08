@@ -3,19 +3,19 @@
 This document enumerates internal and external APIs invoked by code changes in the PR.
 
 ## Overview
-The PR introduces changes to the `update_docs.py` script, which invokes the Groq API.
+The PR introduces changes to the frontend application, which invokes internal APIs to calculate settlements and display suggested transfers.
 
 ## Internal API Calls
-There are no internal API calls introduced by the PR.
+The internal API calls include:
+* `computeSettlements`: Calculates the settlements based on the event balances.
+* `saveDraft`: Saves the event draft to local storage.
+* `loadDraft`: Loads the saved draft from local storage.
 
 ## External API Calls
-The external API calls include:
-* Groq API: The script uses the Groq API to generate technical specifications based on the PR changes.
-* Notion API: The script uses the Notion API to fetch markdown content.
-* GitHub API: The script uses the GitHub API to fetch PR base and head refs.
+There are no external API calls introduced by the PR.
 
 ## Data Contract / Payloads
-The data contract and payloads for the external API calls include:
-* Groq API: The script sends a request to the Groq API with a prompt to generate technical specifications.
-* Notion API: The script sends a request to the Notion API with a page ID to fetch markdown content.
-* GitHub API: The script sends a request to the GitHub API with a PR base and head refs to fetch the PR changes.
+The data contract and payloads for the internal API calls include:
+* `computeSettlements`: The payload includes the event balances.
+* `saveDraft`: The payload includes the event draft.
+* `loadDraft`: The payload includes the saved draft.
