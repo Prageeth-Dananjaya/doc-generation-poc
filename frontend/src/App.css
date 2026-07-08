@@ -74,6 +74,12 @@
   align-items: center;
 }
 
+.draft-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .subsection-header {
   display: flex;
   justify-content: space-between;

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 
 type ExpensePayload = {
@@ -42,6 +42,8 @@ const createId = () => {
     ? crypto.randomUUID()
     : `event-${Date.now()}`;
 };
+
+const DRAFT_KEY = "expense_draft_v1";
 
 function App() {
   const [payload, setPayload] = useState<EventPayload>(defaultPayload);
@@ -327,14 +329,76 @@ function App() {
     setResult(null);
   };
 
+  // Draft persistence helpers
+  const saveDraft = () => {
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  const loadDraft = () => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as EventPayload;
+      setPayload(parsed);
+      setResult(null);
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  const clearDraft = () => {
+    try {
+      localStorage.removeItem(DRAFT_KEY);
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  // Autosave payload to localStorage (debounced)
+  const autosaveTimer = useRef<number | null>(null);
+  useEffect(() => {
+    if (autosaveTimer.current) {
+      window.clearTimeout(autosaveTimer.current);
+    }
+    autosaveTimer.current = window.setTimeout(() => {
+      try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+      } catch (_) {
+        // ignore
+      }
+    }, 700);
+    return () => {
+      if (autosaveTimer.current) window.clearTimeout(autosaveTimer.current);
+    };
+  }, [payload]);
+
   return (
     <main className="app-shell">
       <aside className="sidebar">
         <div className="subsection-header">
           <h3>Events</h3>
-          <button type="button" className="secondary-button" onClick={newEvent}>
-            New
-          </button>
+          <div className="draft-buttons">
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={newEvent}
+            >
+              New
+            </button>
+            <button type="button" className="text-button" onClick={saveDraft}>
+              Save Draft
+            </button>
+            <button type="button" className="text-button" onClick={loadDraft}>
+              Load Draft
+            </button>
+            <button type="button" className="text-button" onClick={clearDraft}>
+              Clear
+            </button>
+          </div>
         </div>
         <div className="event-list">
           {events.map((evt) => (
