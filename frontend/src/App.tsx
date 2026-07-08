@@ -1,62 +1,64 @@
-import { useMemo, useState } from 'react'
-import './App.css'
+import { useMemo, useState } from "react";
+import "./App.css";
 
 type BalanceResponse = {
-  balances: Record<string, number>
-}
+  balances: Record<string, number>;
+};
 
 const defaultPayload = {
-  id: 'event-2',
-  name: 'Weekend Trip',
-  participants: ['alice', 'bob', 'carol'],
+  id: "event-2",
+  name: "Weekend Trip",
+  participants: ["alice", "bob", "carol"],
   expenses: [
     {
-      description: 'Dinner',
+      description: "Dinner",
       amount: 120,
-      participants: ['alice', 'bob', 'carol'],
+      participants: ["alice", "bob", "carol"],
       payments: {
         alice: 120,
       },
     },
   ],
-}
+};
 
 function App() {
-  const [payload, setPayload] = useState(defaultPayload)
-  const [result, setResult] = useState<BalanceResponse | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [payload, setPayload] = useState(defaultPayload);
+  const [result, setResult] = useState<BalanceResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const summary = useMemo(() => {
-    if (!result) return null
-    return Object.entries(result.balances).sort(([a], [b]) => a.localeCompare(b))
-  }, [result])
+    if (!result) return null;
+    return Object.entries(result.balances).sort(([a], [b]) =>
+      a.localeCompare(b),
+    );
+  }, [result]);
 
   const submitEvent = async () => {
-    setIsLoading(true)
-    setError('')
+    setIsLoading(true);
+    setError("");
 
     try {
-      const response = await fetch('/api/event', {
-        method: 'POST',
+      const response = await fetch("/api/event", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error('Unable to calculate balances')
+        throw new Error("Unable to calculate balances");
       }
 
-      const data = (await response.json()) as BalanceResponse
-      setResult(data)
+      const data = (await response.json()) as BalanceResponse;
+      setResult(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong')
+      setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <main className="app-shell">
@@ -65,7 +67,8 @@ function App() {
           <p className="eyebrow">Collaborative expense insights</p>
           <h1>Split group costs fairly, without the spreadsheet headache.</h1>
           <p className="lede">
-            See who owes what in seconds when one or more people already covered the bill.
+            See who owes what in seconds when one or more people already covered
+            the bill.
           </p>
         </div>
 
@@ -81,11 +84,14 @@ function App() {
           <label className="field">
             <span>Participants</span>
             <input
-              value={payload.participants.join(', ')}
+              value={payload.participants.join(", ")}
               onChange={(e) =>
                 setPayload({
                   ...payload,
-                  participants: e.target.value.split(',').map((item) => item.trim()).filter(Boolean),
+                  participants: e.target.value
+                    .split(",")
+                    .map((item) => item.trim())
+                    .filter(Boolean),
                 })
               }
             />
@@ -111,7 +117,7 @@ function App() {
           </label>
 
           <button type="button" onClick={submitEvent} disabled={isLoading}>
-            {isLoading ? 'Calculating…' : 'Calculate balances'}
+            {isLoading ? "Calculating…" : "Calculate balances"}
           </button>
 
           {error ? <p className="error">{error}</p> : null}
@@ -129,8 +135,10 @@ function App() {
             {summary.map(([name, amount]) => (
               <article key={name} className="balance-item">
                 <h3>{name}</h3>
-                <p className={amount >= 0 ? 'positive' : 'negative'}>
-                  {amount >= 0 ? `Should receive ${amount.toFixed(2)}` : `Owes ${Math.abs(amount).toFixed(2)}`}
+                <p className={amount >= 0 ? "positive" : "negative"}>
+                  {amount >= 0
+                    ? `Should receive ${amount.toFixed(2)}`
+                    : `Owes ${Math.abs(amount).toFixed(2)}`}
                 </p>
               </article>
             ))}
@@ -142,7 +150,7 @@ function App() {
         )}
       </section>
     </main>
-  )
+  );
 }
 
-export default App
+export default App;
