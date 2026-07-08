@@ -41,3 +41,48 @@ func TestCalculateSharesWithoutPayer(t *testing.T) {
 		t.Fatalf("expected erin share to be %.2f, got %.2f", 50.0, got)
 	}
 }
+
+func TestExpenseValidateSucceeds(t *testing.T) {
+	expense := Expense{
+		ID:           "expense-1",
+		Description:  "Dinner",
+		Amount:       120,
+		Participants: []string{"alice", "bob", "carol"},
+		Payments: map[string]float64{
+			"alice": 120,
+		},
+	}
+
+	if err := expense.Validate([]string{"alice", "bob", "carol"}); err != nil {
+		t.Fatalf("unexpected validation error: %v", err)
+	}
+}
+
+func TestExpenseValidateRejectsNegativeAmount(t *testing.T) {
+	expense := Expense{
+		ID:           "expense-1",
+		Description:  "Dinner",
+		Amount:       -5,
+		Participants: []string{"alice", "bob"},
+	}
+
+	if err := expense.Validate([]string{"alice", "bob"}); err == nil {
+		t.Fatal("expected validation error for negative amount")
+	}
+}
+
+func TestExpenseValidateRejectsInvalidPayer(t *testing.T) {
+	expense := Expense{
+		ID:           "expense-1",
+		Description:  "Dinner",
+		Amount:       100,
+		Participants: []string{"alice", "bob"},
+		Payments: map[string]float64{
+			"carol": 100,
+		},
+	}
+
+	if err := expense.Validate([]string{"alice", "bob"}); err == nil {
+		t.Fatal("expected validation error for payment payer outside participants")
+	}
+}
