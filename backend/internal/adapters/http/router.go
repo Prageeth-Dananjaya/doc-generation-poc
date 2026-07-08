@@ -16,7 +16,11 @@ func NewRouter(useCase *application.ExpenseUseCase) http.Handler {
 	})
 
 	mux.HandleFunc("/balances", func(w http.ResponseWriter, r *http.Request) {
-		balances := useCase.CalculateBalances()
+		balances, err := useCase.CalculateBalances("event-1")
+		if err != nil {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(map[string]any{"balances": balances})
 	})
@@ -33,8 +37,17 @@ func NewRouter(useCase *application.ExpenseUseCase) http.Handler {
 			return
 		}
 
-		useCase = application.NewExpenseUseCase(event)
-		balances := useCase.CalculateBalances()
+		if err := useCase.CreateEvent(event); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		balances, err := useCase.CalculateBalances(event.ID)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(map[string]any{"balances": balances})
 	})

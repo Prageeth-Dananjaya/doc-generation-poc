@@ -14,6 +14,7 @@ func main() {
 		Name:         "Sample Trip",
 		Participants: []string{"alice", "bob", "carol"},
 		Expenses: []domain.Expense{{
+			ID:           "expense-1",
 			Description:  "Dinner",
 			Amount:       120,
 			Participants: []string{"alice", "bob", "carol"},
@@ -23,7 +24,12 @@ func main() {
 		}},
 	}
 
-	useCase := application.NewExpenseUseCase(event)
+	repository := application.NewInMemoryEventRepository()
+	if err := repository.CreateEvent(event); err != nil {
+		log.Fatalf("failed to seed event: %v", err)
+	}
+
+	useCase := application.NewExpenseUseCase(repository)
 	router := httpadapter.NewRouter(useCase)
 
 	port := ":8081"
