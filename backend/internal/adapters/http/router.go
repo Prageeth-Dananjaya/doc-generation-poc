@@ -52,15 +52,37 @@ func NewRouter(useCase *application.ExpenseUseCase) http.Handler {
 	})
 
 	mux.HandleFunc("/api/events/", func(w http.ResponseWriter, r *http.Request) {
-		id := strings.TrimPrefix(r.URL.Path, "/api/events/")
-		if id == "" {
+		path := strings.TrimPrefix(r.URL.Path, "/api/events/")
+		if path == "" {
 			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		if strings.HasSuffix(path, "/balances") {
+			if r.Method != http.MethodGet {
+				w.WriteHeader(http.StatusMethodNotAllowed)
+				return
+			}
+
+			id := strings.TrimSuffix(path, "/balances")
+			id = strings.TrimSuffix(id, "/")
+			if id == "" {
+				w.WriteHeader(http.StatusNotFound)
+				return
+			}
+
+			balances, err := useCase.CalculateBalances(id)
+			if err != nil {
+				writeRepositoryError(w, err)
+				return
+			}
+			writeJSON(w, http.StatusOK, map[string]any{"balances": balances})
 			return
 		}
 
 		switch r.Method {
 		case http.MethodGet:
-			event, err := useCase.GetEvent(id)
+			event, err := useCase.GetEvent(path)
 			if err != nil {
 				writeRepositoryError(w, err)
 				return
@@ -73,9 +95,9 @@ func NewRouter(useCase *application.ExpenseUseCase) http.Handler {
 				return
 			}
 			if event.ID == "" {
-				event.ID = id
+				event.ID = path
 			}
-			if event.ID != id {
+			if event.ID != path {
 				writeJSONError(w, http.StatusBadRequest, errors.New("event ID does not match URL"))
 				return
 			}
@@ -85,8 +107,7 @@ func NewRouter(useCase *application.ExpenseUseCase) http.Handler {
 			}
 			writeJSON(w, http.StatusOK, event)
 		case http.MethodDelete:
-			if err := useCase.DeleteEvent(id); err != nil {
-				writeRepositoryError(w, err)
+			if err := useCase.DeleteEvent(path); err != nil {
 				return
 			}
 			w.WriteHeader(http.StatusNoContent)
