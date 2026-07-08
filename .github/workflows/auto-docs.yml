@@ -1,60 +1,60 @@
 name: Automated LLM Documentation Sync
 
 on:
-  pull_request:
-    types: [opened, synchronize]
-    branches: [stg]
-    paths-ignore:
-      - 'docs/**'
+    pull_request:
+        types: [opened, synchronize]
+        branches: [stg]
+        paths-ignore:
+            - "docs/**"
 jobs:
-  sync-docs:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    sync-docs:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.11"
 
-      - name: Install Dependencies
-        run: |
-          pip install requests google-genai
+            - name: Install Dependencies
+              run: |
+                  pip install requests groq
 
-      - name: Fetch PR Base and Head Refs
-        run: |
-          git fetch origin "${{ github.base_ref }}:${{ github.base_ref }}" || true
-          git fetch origin "${{ github.head_ref }}" || true
+            - name: Fetch PR Base and Head Refs
+              run: |
+                  git fetch origin "${{ github.base_ref }}:${{ github.base_ref }}" || true
+                  git fetch origin "${{ github.head_ref }}" || true
 
-      - name: Run Documentation Orchestrator
-        env:
-          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
-          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
-          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-          NOTION_API_TOKEN: ${{ secrets.NOTION_API_TOKEN }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GITHUB_BASE_REF: ${{ github.base_ref }}
-          GITHUB_HEAD_REF: ${{ github.head_ref }}
-          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          BATCH_SIZE: "5"
-        run: python .github/scripts/update_docs.py
+            - name: Run Documentation Orchestrator
+              env:
+                  JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+                  JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+                  JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+                  NOTION_API_TOKEN: ${{ secrets.NOTION_API_TOKEN }}
+                  GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+                  GITHUB_BASE_REF: ${{ github.base_ref }}
+                  GITHUB_HEAD_REF: ${{ github.head_ref }}
+                  PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+                  PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+                  BATCH_SIZE: "5"
+              run: python .github/scripts/update_docs.py
 
-      - name: Commit and Push Updates
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            - name: Commit and Push Updates
+              run: |
+                  git config --global user.name "github-actions[bot]"
+                  git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add docs/
-          if ! git diff --cached --quiet; then
-            git commit -m "chore(docs): auto-update technical specifications via LLM [skip ci]"
-            git push
-          else
-            echo "No documentation changes detected."
-          fi
+                  git add docs/
+                  if ! git diff --cached --quiet; then
+                    git commit -m "chore(docs): auto-update technical specifications via LLM [skip ci]"
+                    git push
+                  else
+                    echo "No documentation changes detected."
+                  fi

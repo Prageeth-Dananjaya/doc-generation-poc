@@ -3,8 +3,7 @@ import os
 import time
 import subprocess
 import requests
-from google import genai
-from google.genai import types
+from groq import Groq
 
 def get_jira_ticket_from_branch():
     branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]).decode("utf-8").strip()
@@ -33,7 +32,7 @@ def fetch_notion_markdown(notion_url):
         "Notion-Version": "2022-06-28"
     }
 
-    res = requests.get(f"api.notion.com/v1/blocks/{page_id}/children", headers=headers).json()
+    res = requests.get(f"https://api.notion.com/v1/blocks/{page_id}/children", headers=headers).json()
     text_content = []
     for block in res.get('results', []):
         if block.get('type') == 'paragraph':
@@ -46,7 +45,7 @@ def get_git_diff():
     return subprocess.check_output(["git", "diff", "origin/main...HEAD"]).decode("utf-8")
 
 def update_documentation(context_data):
-    client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
+    client = Groq(api_key=os.getenv('GROQ_API_KEY'))
 
     system_prompt = (
         "You are an automated technical writer inside a CI/CD pipeline.\n"
@@ -74,16 +73,21 @@ def update_documentation(context_data):
     {context_data['git_diff']}
     """
 
-    response = client.models.generate_content(
-        model='gemini-2.5-pro',
-        contents=user_prompt,
-        config=types.GenerateContentConfig(
-            system_instruction=system_prompt,
-            temperature=0.2,
-        )
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {
+                "role": "system",
+                "content": system_prompt,
+            },
+            {
+                "role": "user",
+                "content": user_prompt,
+            },
+        ],
     )
 
-    return response.text
+    return response.choices[0].message.content
 
 def write_files_to_disk(llm_output):
     files = re.split(r"File:\s*(docs/[a-zA-Z0-9_\-\.\/]+)", llm_output)
