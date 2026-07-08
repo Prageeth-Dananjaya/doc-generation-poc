@@ -1,0 +1,140 @@
+.app-shell {
+  display: grid;
+  gap: 24px;
+  padding: 32px;
+}
+
+.hero-card,
+.results-card,
+.panel-card {
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 24px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.2);
+}
+
+.hero-card {
+  display: grid;
+  grid-template-columns: 1.3fr 0.9fr;
+  gap: 24px;
+  padding: 32px;
+}
+
+.hero-copy h1 {
+  font-size: 2.3rem;
+  margin: 0 0 12px;
+  color: #f8fafc;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #8b5cf6;
+  margin-bottom: 8px;
+}
+
+.lede {
+  font-size: 1.02rem;
+  color: #cbd5e1;
+  max-width: 620px;
+}
+
+.panel-card {
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.field input {
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 1rem;
+  background: rgba(15,23,42,0.45);
+  color: #f8fafc;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(90deg, #8b5cf6 0%, #6366f1 100%);
+  color: white;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #fecaca;
+  margin: 0;
+}
+
+.results-card {
+  padding: 24px 32px 32px;
+}
+
+.results-header h2 {
+  margin: 0 0 6px;
+  color: #f8fafc;
+}
+
+.results-header p {
+  color: #cbd5e1;
+}
+
+.balance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.balance-item {
+  background: rgba(15,23,42,0.45);
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.balance-item h3 {
+  margin: 0 0 10px;
+  color: #f8fafc;
+}
+
+.positive {
+  color: #86efac;
+  margin: 0;
+}
+
+.negative {
+  color: #fda4af;
+  margin: 0;
+}
+
+.empty-state {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(15,23,42,0.35);
+  color: #cbd5e1;
+}
+
+@media (max-width: 900px) {
+  .hero-card {
+    grid-template-columns: 1fr;
+  }
+}
