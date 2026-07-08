@@ -48,6 +48,24 @@
   gap: 16px;
 }
 
+.subsection {
+  display: grid;
+  gap: 14px;
+}
+
+.subsection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.subsection-header h3,
+.expense-header h4 {
+  margin: 0;
+  color: #f8fafc;
+}
+
 .field {
   display: grid;
   gap: 8px;
@@ -62,6 +80,77 @@
   font-size: 1rem;
   background: rgba(15, 23, 42, 0.45);
   color: #f8fafc;
+}
+
+.list-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.expense-card {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 18px;
+  background: rgba(15, 23, 42, 0.35);
+  display: grid;
+  gap: 16px;
+}
+
+.expense-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.expense-choices {
+  display: grid;
+  gap: 10px;
+}
+
+.participant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+.checkbox-label,
+.text-button,
+.secondary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-label {
+  gap: 8px;
+  color: #cbd5e1;
+}
+
+.checkbox-label input {
+  width: 16px;
+  height: 16px;
+}
+
+.text-button,
+.secondary-button {
+  border: none;
+  background: transparent;
+  color: #a5b4fc;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+
+.text-button:hover,
+.secondary-button:hover {
+  background: rgba(99, 102, 241, 0.16);
+}
+
+.small-field {
+  font-weight: 500;
 }
 
 button {
