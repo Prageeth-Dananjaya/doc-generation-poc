@@ -11,18 +11,11 @@ The service responsibilities include:
 * Retrieving existing events.
 * Updating existing events.
 * Deleting existing events.
-* Adding new expenses to events.
-* Retrieving all expenses for an event.
-* Updating existing expenses.
-* Deleting existing expenses.
 * Calculating balances for events.
-* Calculating settlements based on event balances (newly introduced).
+* Handling expense-related logic.
 
 ## Key Modules / Components
 The key modules and components include:
 * `EventRepository`: An abstraction for interacting with event data storage.
-* `InMemoryEventRepository`: An implementation of the `EventRepository` interface.
-* `ExpenseRepository`: An abstraction for interacting with expense data storage.
-* `InMemoryExpenseRepository`: An implementation of the `ExpenseRepository` interface.
+* `ExpenseUseCase`: A component responsible for handling expense-related logic.
 * `BalanceCalculator`: A component responsible for calculating balances for events.
-* `SettlementCalculator`: A component responsible for calculating settlements based on event balances (newly introduced).
