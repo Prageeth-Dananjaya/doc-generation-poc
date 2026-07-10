@@ -3,17 +3,25 @@
 This document describes the main business and data flow logic impacted by the PR.
 
 ## Overview
-The changes introduced by the PR involve replacing the LLM (Large Language Model) with Groq and updating the sync workflow.
+The changes introduced by the PR involve adding frontend draft persistence and a settlement plan UI.
 
 ## Entry Points
-The entry points of the logic flow include the `update_docs.py` script, which is triggered by the GitHub Actions workflow.
+The entry points of the logic flow include:
+* The frontend application, which sends requests to the backend API to create, read, update, and delete events and expenses.
+* The `App.tsx` file, which handles the frontend application logic.
 
 ## Control Flow
 The control flow of the logic flow involves the following steps:
-1. The `update_docs.py` script fetches the PR base and head refs.
-2. The script runs the documentation orchestrator using the Groq API.
-3. The documentation orchestrator generates technical specifications based on the PR changes.
-4. The script commits and pushes the updated documentation to the repository.
+1. The frontend application sends a request to the backend API to create a new event.
+2. The frontend application autosaves the event draft to local storage.
+3. The frontend application loads the saved draft from local storage.
+4. The frontend application calculates the settlements based on the event balances.
+5. The frontend application displays the suggested transfers.
 
 ## Important Branches
-The important branches in the logic flow include the `stg` branch, which is the target branch for the PR.
+The important branches in the logic flow include:
+* The `computeSettlements` function, which calculates the settlements based on the event balances.
+* The `saveDraft` and `loadDraft` functions, which handle the frontend draft persistence.
+
+## Changes Introduced
+The changes introduced by the PR involve adding frontend draft persistence and a settlement plan UI. These changes impact the control flow of the logic flow, adding new steps and branches to handle the additional functionality.
