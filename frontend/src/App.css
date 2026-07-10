@@ -1,0 +1,279 @@
+.app-shell {
+  display: grid;
+  gap: 24px;
+  padding: 32px;
+}
+
+.hero-card,
+.results-card,
+.panel-card {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.2);
+}
+
+.hero-card {
+  display: grid;
+  grid-template-columns: 1.3fr 0.9fr;
+  gap: 24px;
+  padding: 32px;
+}
+
+.hero-copy h1 {
+  font-size: 2.3rem;
+  margin: 0 0 12px;
+  color: #f8fafc;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #8b5cf6;
+  margin-bottom: 8px;
+}
+
+.lede {
+  font-size: 1.02rem;
+  color: #cbd5e1;
+  max-width: 620px;
+}
+
+.panel-card {
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.subsection {
+  display: grid;
+  gap: 14px;
+}
+
+.sidebar {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.06);
+  width: 220px;
+}
+
+.event-list {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.event-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+
+.draft-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.settlement-plan {
+  margin-top: 18px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.06);
+  padding-top: 12px;
+}
+
+.transfer-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+.transfer-arrow {
+  opacity: 0.8;
+}
+
+.transfer-amount {
+  margin-left: auto;
+  font-weight: 600;
+}
+
+.subsection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.subsection-header h3,
+.expense-header h4 {
+  margin: 0;
+  color: #f8fafc;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.field input {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 1rem;
+  background: rgba(15, 23, 42, 0.45);
+  color: #f8fafc;
+}
+
+.list-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.expense-card {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 18px;
+  background: rgba(15, 23, 42, 0.35);
+  display: grid;
+  gap: 16px;
+}
+
+.expense-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.expense-choices {
+  display: grid;
+  gap: 10px;
+}
+
+.participant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+.checkbox-label,
+.text-button,
+.secondary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-label {
+  gap: 8px;
+  color: #cbd5e1;
+}
+
+.checkbox-label input {
+  width: 16px;
+  height: 16px;
+}
+
+.text-button,
+.secondary-button {
+  border: none;
+  background: transparent;
+  color: #a5b4fc;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+
+.text-button:hover,
+.secondary-button:hover {
+  background: rgba(99, 102, 241, 0.16);
+}
+
+.small-field {
+  font-weight: 500;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(90deg, #8b5cf6 0%, #6366f1 100%);
+  color: white;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #fecaca;
+  margin: 0;
+}
+
+.results-card {
+  padding: 24px 32px 32px;
+}
+
+.results-header h2 {
+  margin: 0 0 6px;
+  color: #f8fafc;
+}
+
+.results-header p {
+  color: #cbd5e1;
+}
+
+.balance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.balance-item {
+  background: rgba(15, 23, 42, 0.45);
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.balance-item h3 {
+  margin: 0 0 10px;
+  color: #f8fafc;
+}
+
+.positive {
+  color: #86efac;
+  margin: 0;
+}
+
+.negative {
+  color: #fda4af;
+  margin: 0;
+}
+
+.empty-state {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.35);
+  color: #cbd5e1;
+}
+
+@media (max-width: 900px) {
+  .hero-card {
+    grid-template-columns: 1fr;
+  }
+}
